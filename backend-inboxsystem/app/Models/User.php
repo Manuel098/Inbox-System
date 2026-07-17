@@ -12,6 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
+
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -29,4 +30,29 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    /**
+     * Get all user threads
+     */
+    public function threads(): BelongsToMany
+    {
+        return $this->belongsToMany(Thread::class)->withPivot('last_read_at')->withTimestamps();
+    }
+
+    /**
+     * Get user messages
+     */
+    public function messages(): HasMany
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    /**
+     * Get user Threads
+     */
+    public function createdThreads(): HasMany
+    {
+        return $this->hasMany(Thread::class, 'created_by');
+    }
+
 }
