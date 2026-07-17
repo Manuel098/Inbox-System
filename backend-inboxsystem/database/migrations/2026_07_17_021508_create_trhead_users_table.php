@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trhead_users', function (Blueprint $table) {
+        Schema::create('thread_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('thread_id')->constrained('trheads')->cascadeOnDelete();
+            $table->foreignId('thread_id')->constrained('threads')->cascadeOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->dateTime('last_read_at');
             $table->timestamps();
