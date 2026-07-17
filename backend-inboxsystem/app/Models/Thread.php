@@ -6,14 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+
 
 #[Fillable(['subject', 'created_by', 'last_message_at', 'status'])]
 
 class Thread extends Model
 {
-    protected $casts = [
-        'last_message_at' => 'datetime'
-    ];
+    use HasFactory;
+    protected $casts = [ 'last_message_at' => 'datetime' ];
 
     /**
      * Get thread creator

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trheads', function (Blueprint $table) {
+        Schema::create('threads', function (Blueprint $table) {
             $table->id();
             $table->enum('status',['New', 'Ready', 'Running', 'Waiting', 'Timed Waiting', 'sleep', 'Terminated'])->default('New');
             $table->dateTime('last_message_at');
