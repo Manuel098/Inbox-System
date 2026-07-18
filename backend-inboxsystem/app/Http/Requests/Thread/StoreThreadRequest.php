@@ -5,7 +5,7 @@ namespace App\Http\Requests\Thread;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class IndexThreadRequest extends FormRequest
+class StoreThreadRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,8 @@ class IndexThreadRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'subject' => 'required | string | max:255',
+            'message' => 'required | string'
         ];
     }
 }

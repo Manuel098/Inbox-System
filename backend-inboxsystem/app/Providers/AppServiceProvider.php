@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+// INTERFACES
 use App\Interfaces\Auth\AuthServiceInterface;
 use App\Interfaces\Thread\ThreadServiceInterface;
+// SERVICES
 use App\Services\Auth\AuthService;
 use App\Services\Thread\ThreadService;
 
