@@ -2,8 +2,13 @@
 
 namespace App\Services\Thread;
 
+use Illuminate\Support\Facades\DB;
 use App\Exceptions\AuthorizationException;
+// DTOs
 use App\DTOs\Thread\ThreadFiltersData;
+use App\DTOs\Thread\StoreThreadData;
+use App\DTOs\Thread\StoreMessageData;
+// Models
 use App\Models\Thread;
 
 class ThreadService
@@ -53,7 +58,27 @@ class ThreadService
         return $thread;
     }
 
-    public function validateAccess(Thread $thread) {
+    public function store(StoreThreadData $payload): Thread {
+        return DB::transaction(function () use ($payload) {
+            // Create new Thread
+            $thread = Thread::create([
+                'created_by' => $payload->user->id,
+                'subject' => $payload->subject,
+                'last_message_at' => now()
+            ]);
+
+            // Push message
+            return $this->pushMessage($thread, $payload);
+        });
+    }
+
+    public function storeMessage(StoreMessageData $payload): Thread
+    {
+        $this->validateAccess($payload->thread);
+        return $this->pushMessage($payload->thread, $payload);
+    }
+
+    private function validateAccess(Thread $thread) {
         $userId = auth()->id();
         $hasAccess = ($thread->created_by === $userId) || ($thread->users()->where('users.id', $userId)->exists());
 
@@ -61,5 +86,24 @@ class ThreadService
             throw new AuthorizationException('No permissions to access on this three.');
         }
 
+    }
+
+    private function pushMessage(Thread $thread, $payload): Thread
+    {
+        return DB::transaction(function () use ($thread, $payload) {
+            // Update Last read
+            $thread->users()
+                ->updateExistingPivot(auth()->id(), [ 'last_read_at'=>now() ]);
+
+            $thread->update(['last_message_at', now()]);
+            
+            // Push new message on thread
+            $thread->messages()->create([
+                'user_id' => auth()->id(),
+                'body' => $payload->message,
+            ]);
+            
+            return $thread;
+        });
     }
 }

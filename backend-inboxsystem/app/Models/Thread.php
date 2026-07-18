@@ -10,12 +10,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 
-#[Fillable(['subject', 'created_by', 'last_message_at', 'status'])]
-
 class Thread extends Model
 {
     use HasFactory;
     protected $casts = [ 'last_message_at' => 'datetime' ];
+    protected $fillable = [ 'subject', 'created_by', 'last_message_at', 'status' ];
 
     /**
      * Get thread creator
