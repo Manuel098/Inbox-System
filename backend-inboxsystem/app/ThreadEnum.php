@@ -9,6 +9,6 @@ enum ThreadEnum: string
     case RUNNING = 'Running';
     case WAITING = 'Waiting';
     case TIMED_WAITING = 'Timed Waiting';
-    case SLEEP = 'Sleep';
+    case SLEEP = 'sleep';
     case TERMINATED = 'Terminated';
 }
