@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Collection;
 
 
 class Thread extends Model
@@ -46,5 +47,21 @@ class Thread extends Model
     public function latestMessage(): HasOne
     {
         return $this->hasOne(Message::class)->latestOfMany();
+    }
+    
+    /**
+     * Obtiene todos los participantes del thread excluyendo a un usuario específico 
+     *
+     * @param int $userId ID del usuario a excluir de la relación.
+     * @return Collection<int, \App\Models\User> Colección filtrada y única de usuarios.
+     */
+
+    public function participantsExcept(int $userId): Collection
+    {
+        return $this->users()
+            ->get()
+            ->push($this->creator)
+            ->unique('id')
+            ->reject(fn($user) => $user->id === $userId);
     }
 }

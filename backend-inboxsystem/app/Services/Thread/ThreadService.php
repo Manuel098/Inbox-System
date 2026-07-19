@@ -8,8 +8,12 @@ use App\Exceptions\AuthorizationException;
 use App\DTOs\Thread\ThreadFiltersData;
 use App\DTOs\Thread\StoreThreadData;
 use App\DTOs\Thread\StoreMessageData;
+use App\DTOs\Notify\NewNotificationMessageData;
 // Models
 use App\Models\Thread;
+use App\Models\Message;
+// Actions
+use App\Actions\Notify\SendMessageAction;
 
 class ThreadService
 {
@@ -59,20 +63,21 @@ class ThreadService
     }
 
     public function store(StoreThreadData $payload): Thread {
-        return DB::transaction(function () use ($payload) {
+        $thread = DB::transaction(function () use ($payload) {
             // Create new Thread
             $thread = Thread::create([
                 'created_by' => $payload->user->id,
                 'subject' => $payload->subject,
                 'last_message_at' => now()
             ]);
-
-            // Push message
-            return $this->pushMessage($thread, $payload);
+            return $thread->load([ 'creator', 'users', 'messages.user' ]);
         });
+        // Push message
+        $this->pushMessage($thread, $payload);
+        return $thread;
     }
 
-    public function storeMessage(StoreMessageData $payload): Thread
+    public function storeMessage(StoreMessageData $payload): Message
     {
         $this->validateAccess($payload->thread);
         return $this->pushMessage($payload->thread, $payload);
@@ -88,9 +93,9 @@ class ThreadService
 
     }
 
-    private function pushMessage(Thread $thread, $payload): Thread
+    private function pushMessage(Thread $thread, $payload): Message
     {
-        return DB::transaction(function () use ($thread, $payload) {
+        [$thread, $message] = DB::transaction(function () use ($thread, $payload) {
             // Update Last read
             $thread->users()
                 ->updateExistingPivot(auth()->id(), [ 'last_read_at'=>now() ]);
@@ -98,12 +103,35 @@ class ThreadService
             $thread->update(['last_message_at', now()]);
             
             // Push new message on thread
-            $thread->messages()->create([
+            $message = $thread->messages()->create([
                 'user_id' => auth()->id(),
                 'body' => $payload->message,
             ]);
             
-            return $thread;
+            return [$thread, $message];
+        });
+
+        // Notify Participants
+        $this->notify($thread, $message);
+
+        return $message;
+    }
+
+    /**
+     * Notifica a todos los participantes de un hilo sobre un nuevo mensaje
+     * excluyendo al usuario que originó la acción.
+     *
+     * @param \App\Models\Thread $thread Instancia del hilo de conversación.
+     * @param \App\Models\Message $message Instancia del mensaje enviado.
+     * @param int $senderId ID del usuario que envía el mensaje (por defecto el usuario autenticado).
+     * @return void
+     */
+    private function notify(Thread $thread, Message $message): void
+    {
+        $participants = $thread->participantsExcept(auth()->id());
+        $action = app(SendMessageAction::class);
+        $participants->each(function ($user) use ($action, $thread, $message) {
+            $action( NewNotificationMessageData::fromCall($user, $thread, $message) );
         });
     }
 }

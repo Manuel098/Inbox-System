@@ -20,11 +20,12 @@ class StoreMessageAction
      * Crea y almacena un nuevo hilo en el sistema.
      *
      * @param StoreMessageData $data Objeto de transferencia de datos con la información del hilo.
-     * @return Thread Instancia del hilo recién creado.
+     * @return Message Instancia del hilo recién creado.
      *
      * @throws \Exception Si ocurre un error inesperado durante la creación del hilo.
      */
-    public function __invoke( StoreMessageData $payload ) {
+    public function __invoke( StoreMessageData $payload ): Message
+    {
         return $this->service->storeMessage($payload);
     }
 }

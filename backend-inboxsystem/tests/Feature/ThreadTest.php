@@ -68,7 +68,7 @@ class ThreadTest extends TestCase
             'message' => 'Mi pedido nunca llegó.',
         ]);
 
-        $response->assertCreated()->assertJsonStructure([ 'data' => ['id', 'subject'] ]);
+        $response->assertStatus(201)->assertJsonStructure([ 'data' => ['id', 'subject', 'status'] ]);
         $this->assertDatabaseHas('threads', [ 'created_by' => $user->id, 'subject' => 'Problema con mi pedido' ]);
         $this->assertDatabaseHas('messages', [ 'user_id' => $user->id, 'body' => 'Mi pedido nunca llegó.' ]);
     }
@@ -110,7 +110,7 @@ class ThreadTest extends TestCase
             'message' => 'Esta es una respuesta.',
         ]);
 
-        $response->assertStatus(200)->assertJsonStructure([ 'data' => [ 'id', 'subject', 'last_message_at' ] ]);
+        $response->assertStatus(201)->assertJsonStructure([ 'data' => [ 'id', 'body', 'thread_id' ] ]);
         $this->assertDatabaseHas('messages', [
             'thread_id' => $thread->id,
             'user_id' => $user->id,

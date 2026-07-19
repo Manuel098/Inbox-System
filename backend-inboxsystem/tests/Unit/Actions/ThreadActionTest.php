@@ -52,12 +52,12 @@ class ShowThreadActionTest extends TestCase
     {
         $service = Mockery::mock(ThreadService::class);
         $data = Mockery::mock(StoreMessageData::class);
-        $thread = Thread::factory()->make();
+        $message = Message::factory()->make();
         
-        $service->shouldReceive('storeMessage')->once()->with($data)->andReturn($thread);
+        $service->shouldReceive('storeMessage')->once()->with($data)->andReturn($message);
         $action = new StoreMessageAction($service);
 
         $result = $action($data);
-        $this->assertSame($thread, $result);
+        $this->assertSame($message, $result);
     }
 }
