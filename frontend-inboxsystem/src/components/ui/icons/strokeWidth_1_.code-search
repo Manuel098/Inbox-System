@@ -1,0 +1,29 @@
+# Query: strokeWidth="1"
+# ContextLines: 1
+
+5 results - 5 files
+
+frontend-inboxsystem/src/components/ui/icons/Account.jsx:
+   9        stroke="currentColor"
+  10:       strokeWidth="2"
+  11        className={className}
+
+frontend-inboxsystem/src/components/ui/icons/Close.jsx:
+   9        stroke="currentColor"
+  10:       strokeWidth="2"
+  11        className={className}
+
+frontend-inboxsystem/src/components/ui/icons/Menu.jsx:
+   9        stroke="currentColor"
+  10:       strokeWidth="2"
+  11        className={className}
+
+frontend-inboxsystem/src/components/ui/icons/Notification.jsx:
+   9        stroke="currentColor"
+  10:       strokeWidth="2"
+  11        className={className}
+
+frontend-inboxsystem/src/components/ui/icons/Plus.jsx:
+   9        stroke="currentColor"
+  10:       strokeWidth="2"
+  11        className={className}

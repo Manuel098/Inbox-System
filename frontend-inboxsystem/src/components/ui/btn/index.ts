@@ -1,0 +1,1 @@
+export { default as GlobalBtn } from './GlobalBtn';
