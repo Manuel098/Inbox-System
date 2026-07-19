@@ -12,5 +12,5 @@ interface ThreadServiceInterface {
     public function paginate( ThreadFiltersData $payload );
     public function show( Thread $thread );
     public function store(StoreThreadData $data);
-    public function storeMessage(StoreMessageData $data);
+    public function storeMessage(StoreMessageData $data): Message;
 }

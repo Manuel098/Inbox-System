@@ -3,12 +3,14 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-// INTERFACES
+// Interfaces
 use App\Interfaces\Auth\AuthServiceInterface;
 use App\Interfaces\Thread\ThreadServiceInterface;
-// SERVICES
+use App\Interfaces\Notify\NotificationServiceInterface;
+// Services
 use App\Services\Auth\AuthService;
 use App\Services\Thread\ThreadService;
+use App\Services\Notify\NotificationService;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind( AuthServiceInterface::class, AuthService::class );
         // Thread Provider
         $this->app->bind( ThreadServiceInterface::class, ThreadService::class );
+        // Thread Provider
+        $this->app->bind( NotificationServiceInterface::class, NotificationService::class );
     }
 
     /**
