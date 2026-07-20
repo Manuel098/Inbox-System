@@ -46,8 +46,10 @@ services:
       - app-network
 
   react:
-    image: node:22
     container_name: is-frontend
+    build:
+      context: ./frontend-inboxsystem
+      dockerfile: Dockerfile
     working_dir: /app
     command: npm run dev -- --host
     ports:

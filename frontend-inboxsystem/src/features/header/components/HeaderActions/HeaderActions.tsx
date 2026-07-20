@@ -24,7 +24,9 @@ const HeaderActions = () => {
             </div>
 
             {/* BOTÓN HAMBURGUESA: Solo visible en móvil (md:hidden) */}
-            <GlobalBtn onClick={() => setIsOpen(!isOpen)}  icon={isOpen ? CloseIcon : MenuIcon }/> 
+            <div className="block md:hidden">
+                <GlobalBtn onClick={() => setIsOpen(!isOpen)}  icon={isOpen ? CloseIcon : MenuIcon }/> 
+            </div>
 
             {/* VISTA MÓVIL (MENÚ VERTICAL): Se despliega solo si isOpen es true */}
             {isOpen && (
